@@ -7,7 +7,6 @@
 node_modules/
 vendor/
 public/
-resources/
 backup.zip/
 public.zip/
 dist/

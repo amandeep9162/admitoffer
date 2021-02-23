@@ -1,0 +1,672 @@
+<template>
+    <div class="container search" >
+
+        <div class="row">
+            <div class="col-md-12">
+                
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <select class="mb-2 form-control bgColorGray" v-on:change="onCountryChange()" v-model="country_id"  name="country_id" id="country_id" >
+                            <option value=''> Select country</option>
+                        
+                                <option v-for="country in countries" v-bind:value="country.id" >{{country.name}}</option>
+                        
+                        </select>
+                    </div>   
+                    <div class="col-md-4">
+                        <select class="mb-2 form-control bgColorGray" name="qualifications_id" v-model="qualifications_id"  >
+                            <option value=''> Select Qualification</option>
+                            <option v-bind:value='qualification.id' v-for="qualification in qualifications">{{qualification.name}}</option>
+                        </select>
+                    </div>   
+                    <div class="col-md-3">
+                        <select class="mb-2 form-control bgColorGray" name="subjects_id"  v-model="subjects_id" >
+                            <option value=''> Select Subject</option>
+                            <option v-bind:value='subject.id' v-for="subject in subjects"> {{subject.name}}</option>
+                        </select>
+                    </div>   
+                    <!-- <div class="col-md-4">
+                        <select class="mb-2 form-control bgColorGray" name="state_id" id="state_id" >
+                            <option value=''> Select state</option>
+                        </select>
+                    </div>   
+                    <div class="col-md-3">
+                        <select class="mb-2 form-control bgColorGray" name="city_id" id="city_id"  >
+                            <option value=''> Select city</option>
+                        </select>
+                    </div>    -->
+                    <div class="col-md-1">
+                        <button class="btn btn-info">Find</button>
+                    </div>   
+                </div> 
+                <div class="row"> 
+                    <div class="col-md-6">
+                        <div class="isItetsClass">
+                            <label>
+
+                                <input type="checkbox" name="isIlets" id="isIletsCheck"  v-on:click="onIsIletsClick()"  class="mb-2 bgColorGray" > <span> Is Ilets Required?</span>
+                            </label>
+                        </div>
+                        <div id="isIletsShow" class="displayNone">
+                            <div class="form-group row">    
+                                <div class="col-sm-12">
+                                    <select class="mb-2 form-control bgColorGray" name="iletsScore_id"  v-model="iletsScore_id" >
+                                        <option value=''> Select Ilets Score</option>
+                                        <option :value="iletsScore.id" v-for="iletsScore in iletsScores">{{iletsScore.name}}</option>
+                                        
+                                    </select>
+                                    <div id="isEScoreHide" >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>   
+                    <div class="col-md-6">
+                        <div class="isItetsClass">
+                            <label>
+
+                                <input type="checkbox" name="isMath" id="isMathCheck" v-on:click="onIsMathClick()"  class="mb-2 " > <span> Maths Required?</span>
+                            </label>
+                        </div>
+                        <div id="isMathShow" class="displayNone">
+                            <div class="form-group row">    
+                                <!-- <label for="input-id" class=" col-sm-2">Score In Maths<span class="text-danger">*</span> </label> -->
+                                <div class="col-sm-12">
+                                <input type="number" placeholder="Score In Maths"  min="0"  name="mathScore_id"  v-model="mathScore_id" class="mb-2 form-control bgColorGray"  >
+                                </div>
+                            </div>
+                        </div>
+                    </div>   
+                </div> 
+                
+                <br> 
+                <div class="row">
+                        <div class="col-md-12">
+                            <div class="app-header__content" >
+                                    <div class="app-header-left">
+                                        <div class="search-wrapper active" style=" width:100%!important;">
+                                            <div class="input-holder "  style=" width:100%!important;">
+                                                <input type="text" class="search-input" name="search" v-model="search" placeholder="Type to search">
+                                                <button type="button" class="search-icon"><span></span></button>
+                                            </div>
+                                            <!-- <button class="close"></button> -->
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>   
+                    </div> <br>
+                    <div class="row" v-if="coursesLength > '0'">
+                        <div class="col-sm-12"  >
+                                
+                                <div class="clearBtnDiv " v-on:click="clearFilter()">
+
+                                    Clear Filter
+                                </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-3">
+                                <div class="app-sidebar sidebar-shadow positionUnset">
+                                        <div class="app-header__logo">
+                                            <div class="logo-src"></div>
+                                            <div class="header__pane ml-auto">
+                                                <div>
+                                                    <button type="button" class="hamburger close-sidebar-btn hamburger--elastic" data-class="closed-sidebar">
+                                                        <span class="hamburger-box">
+                                                            <span class="hamburger-inner"></span>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="app-header__mobile-menu">
+                                            <div>
+                                                <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav">
+                                                    <span class="hamburger-box">
+                                                        <span class="hamburger-inner"></span>
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="app-header__menu">
+                                            <span>
+                                                <button type="button" class="btn-icon btn-icon-only btn btn-primary btn-sm mobile-toggle-header-nav">
+                                                    <span class="btn-icon-wrapper">
+                                                        <i class="fa fa-ellipsis-v fa-w-6"></i>
+                                                    </span>
+                                                </button>
+                                            </span>
+                                        </div>    
+                                        <div class="scrollbar-sidebar">
+                                            <div class="app-sidebar__inner">
+                                                <ul class="vertical-nav-menu">
+                                                    <!-- <li class="app-sidebar__heading">Dashboards</li>
+                                                    <li>
+                                                        <a href="{{route('admin.home')}}" class="mm-active">
+                                                            <i class="metismenu-icon pe-7s-rocket"></i>
+                                                            Dashboard
+                                                        </a>
+                                                    </li> -->
+                                                    <li class="app-sidebar__heading">Inventory</li>
+                                                    <li class="sidebar__headingChild">
+                                                        <a href="javascript:;" class="toogleMain">
+                                                            <i class="metismenu-icon pe-7s-home"></i>
+                                                            Institutes
+                                                            <i class="metismenu-state-icon pe-7s-angle-down caret-left toogleMain"></i>
+                                                        </a>
+                                                        <ul class="displayNone"> 
+                                                            
+                                                            <li v-for="college in colleges">
+                                                                <a href="javascript:;" class="capitalize">
+                                                                    <i class="metismenu-icon">
+                                                                    </i>
+                                                                    <input type="radio" name="colleges_id" v-model="colleges_id" :value="college.id">
+                                                                    {{college.name}}
+                                                                </a>
+                                                            </li>
+                                                           
+                                                        </ul>
+                                                    </li>
+                                                    <li class="app-sidebar__heading">Masters</li>
+                                                    <!-- <li>
+                                                        <a href="javascript:;">
+                                                            <i class="metismenu-icon pe-7s-notebook"></i>
+                                                            Qualifications
+                                                            <i class="metismenu-state-icon pe-7s-angle-down caret-left toogleMain"></i>
+                                                        </a>
+                                                        <ul > 
+                                                            <li v-for="qualification in qualifications">
+                                                                <a href="javascript:void;">
+                                                                    <i class="metismenu-icon">
+                                                                    </i>
+                                                                    <input type="checkbox" name="qualification[]" value="qualification.id">
+                                                                    {{qualification.name}}
+                                                                </a>
+                                                            </li>
+                                                            
+                                                        </ul>
+                                                    </li> -->
+                                                    <li class="sidebar__headingChild">
+                                                        <a href="javascript:;" class="toogleMain">
+                                                            <i class="metismenu-icon pe-7s-notebook"></i>
+                                                            Program Lengths
+                                                            <i class="metismenu-state-icon pe-7s-angle-down caret-left toogleMain"></i>
+                                                        </a>
+                                                        <ul class="displayNone"> 
+                                                            <li v-for="programLength in programLengths">
+                                                                <a href="javascript:;">
+                                                                    <i class="metismenu-icon">
+                                                                    </i>
+                                                                    <input name="programLength" type="radio" v-model="programLength_id" :value="programLength.id">
+                                                                    {{programLength.name}}
+                                                                </a>
+                                                            </li>
+                                                            
+                                                        </ul>
+                                                    </li>
+                                                    <!-- <li>
+                                                        <a href="javascript:;">
+                                                            <i class="metismenu-icon pe-7s-notebook"></i>
+                                                            Subjects
+                                                            <i class="metismenu-state-icon pe-7s-angle-down caret-left toogleMain"></i>
+                                                        </a>
+                                                        <ul > 
+                                                            <li v-for="subject in subjects">
+                                                                <a href="javascript:;">
+                                                                    <i class="metismenu-icon">
+                                                                    </i>
+                                                                    <input name="subject[]" type="checkbox" value="subject.id">
+                                                                    {{subject.name}}
+                                                                </a>
+                                                            </li>
+                                                            
+                                                        </ul>
+                                                    </li> -->
+                                                    <li class="sidebar__headingChild">
+                                                        <a href="javascript:;" class="toogleMain">
+                                                            <i class="metismenu-icon pe-7s-notebook"></i>
+                                                            Course Levels
+                                                            <i class="metismenu-state-icon pe-7s-angle-down caret-left toogleMain"></i>
+                                                        </a>
+                                                        <ul class="displayNone"> 
+                                                            <li v-for="courseLevel in courseLevels">
+                                                                <a href="javascript:;">
+                                                                    <i class="metismenu-icon">
+                                                                    </i>
+                                                                    <input name="courseLevel" type="radio" v-model="courseLevel_id" :value="courseLevel.id">
+                                                                    {{courseLevel.name}}
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <!-- <li>
+                                                        <a href="javascript:;">
+                                                            <i class="metismenu-icon pe-7s-notebook"></i>
+                                                            Ilets Scores
+                                                            <i class="metismenu-state-icon pe-7s-angle-down caret-left toogleMain"></i>
+                                                        </a>
+                                                        <ul > 
+                                                            <li v-for="iletsScore in iletsScores">
+                                                                <a href="javascript:;">
+                                                                    <i class="metismenu-icon">
+                                                                    </i>
+                                                                    <input name="iletsScore" type="radio" value="iletsScore.id"> 
+                                                                    {{iletsScore.name}}
+                                                                </a>
+                                                            </li>
+                                                            
+                                                        </ul>
+                                                    </li> -->
+                                                    <li class="sidebar__headingChild">
+                                                        <a href="javascript:;" class="toogleMain">
+                                                            <i class="metismenu-icon pe-7s-notebook"></i>
+                                                            Course Status
+                                                            <i class="metismenu-state-icon pe-7s-angle-down caret-left toogleMain"></i>
+                                                        </a>
+                                                        <ul class="displayNone"> 
+                                                            <li>
+                                                                <a href="javascript:;">
+                                                                    <i class="metismenu-icon">
+                                                                    </i>
+                                                                    <input name="program_status" type="radio" value="1"  v-model="program_status"> 
+                                                                    Open
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript:;">
+                                                                    <i class="metismenu-icon">
+                                                                    </i>
+                                                                    <input name="program_status" type="radio" value="0" v-model="program_status"> 
+                                                                    Close
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript:;">
+                                                                    <i class="metismenu-icon">
+                                                                    </i>
+                                                                    <input name="program_status" type="radio" value="2" v-model="program_status"> 
+                                                                    Waitlisted
+                                                                </a>
+                                                            </li>
+                                                            
+                                                        </ul>
+                                                    </li>
+                                                    <li class="sidebar__headingChild">
+                                                        <a href="javascript:;" class="toogleMain">
+                                                            <i class="metismenu-icon pe-7s-notebook"></i>
+                                                            English Scores
+                                                            <i class="metismenu-state-icon pe-7s-angle-down caret-left toogleMain"></i>
+                                                        </a>
+                                                        <ul class="displayNone">
+                                                            <li v-for="englishScore in englishScores">
+                                                                <a href="javascript:;">
+                                                                    <i class="metismenu-icon">
+                                                                    </i>
+                                                                    <input name="englishScore" type="radio" :value="englishScore.id" v-model="englishScore_id"> 
+                                                                    {{englishScore.score}}
+                                                                </a>
+                                                            </li>
+                                                            
+                                                        </ul>
+                                                    </li>
+                                                   
+                                                    
+                                                </ul>
+                                            </div>
+                                            <div class="margin-top-40">&nbsp;</div>
+                                        </div>
+                                    </div>   
+                                        
+                                </div>
+                                <div class="col-sm-12 col-lg-9">
+                                    <div class="card-hover-shadow-2x mb-3 card totalCourseDivMain">
+                                            <div class="totalCourseDiv float-right">
+    
+                                                    {{filterCourse.length}} of {{courses.length}}
+                                                </div>
+                                        <div class="scroll-area-lg " style="height: auto !important;max-height: 800px !important;">
+                                            <perfect-scrollbar class="ps-show-limits">
+                                                <div style="position: static;" class="ps ps--active-y">
+                                                    <div class="ps-content">
+                                                        <ul class="todo-list-wrapper list-group list-group-flush" id="exampleAccordion">
+                                                            
+                                                            <div v-for="course in filterCourse">
+            
+            
+                                                            
+                                                                <li class="list-group-item">
+                                                                    <div class="todo-indicator bg-success"></div>
+                                                                    <div class="widget-content p-0">
+                                                                        <div class="widget-content-wrapper">
+                                                                            <div class="widget-content-left flex2">
+                                                                                <div class="widget-heading"><h5><strong>{{course.name}}</strong></h5></div>
+                                                                                <div class="row">
+            
+                                                                                    <div class=" col-md-2">{{course.intake}}<span class="float-right">|</span></div>
+                                                                                    <div class=" col-md-4 capitalize "><strong>Institute: </strong>{{course.college.name.substring(0,20)}}<span class="float-right">|</span></div>
+                                                                                    <div class=" col-md-3 ">
+                                                                                           
+                                                                                            <span  v-if="course.program_status == '0'">
+                                                                                                <i class="fa fa-dot-circle" style="color:red;background:red;"></i> Close
+
+                                                                                            </span>
+                                                                                            <span  v-if="course.program_status == '1'">
+                                                                                                <i class="fa fa-dot-circle" style="color:green;background:green;"></i> Open
+
+                                                                                            </span>
+                                                                                            <span  v-if="course.program_status == '2'">
+                                                                                                <i class="fa fa-dot-circle" style="color:orange;background:orange;"></i> Waitlisted
+
+                                                                                            </span>
+                                                                                        
+                                                                                        <span class="float-right">|</span>
+                                                                                    </div>
+                                                                                    <div class=" col-md-3"><strong>Website :</strong> <a :href="course.college.website_link" target="_blank"> <i class="fa fa-link"></i></a></div>
+                                                                                </div>
+                                                                            
+                                                                            </div>
+                                                                            <div class="widget-content-right">
+                                                                                <div class="badge badge-warning mr-2">{{ course.college.city.name }}</div>
+                                                                            </div>
+                                                                            <div class="widget-content-right">
+                                                                                    <button type="button" class="border-0 btn-transition btn btn-outline-success m-0 p-0 btn btn-link" aria-expanded="false" aria-controls="exampleAccordion" data-toggle="collapse" :href="'#collapseExample'+course.id" >
+                                                                                            <fa name="check" _nghost-c2=""><i _ngcontent-c2="" aria-hidden="true" class="fa fa-arrow-down"></i></fa>
+                                                                                        </button>
+                                                                              
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                                <li class="list-group-item" style="padding:0 20px 0px 20px;">
+                                                                        <div class="todo-indicator bg-success"></div>
+
+                                                                        
+                                                                        <div data-parent="#exampleAccordion" :id="'collapseExample'+course.id" class="collapse">
+                                                                            <div class="row">
+                                                                                <div class="col-md-4 courseDetail padding-10px"><h5><strong>Course Detail</strong></h5></div>
+                                                                                <div class="col-md-8 padding-10px"><small>&nbsp;</small></div>
+                                                                            </div>
+                                                                           
+                                                                            <div class="row">
+                                                                                <div class="col-md-4 courseDetail padding-10px"><strong>Subject</strong></div>
+                                                                                <div class="col-md-8 padding-10px"><small> {{course.subjects.name}}</small></div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-4 courseDetail padding-10px"><strong>Qualification</strong></div>
+                                                                                <div class="col-md-8 padding-10px"><small> {{course.qualifications.name}}</small></div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-4 courseDetail padding-10px"><strong>Course Level</strong></div>
+                                                                                <div class="col-md-8 padding-10px"><small> {{course.course_levels.name}}</small></div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-4 courseDetail padding-10px"><strong>Program Lengths</strong></div>
+                                                                                <div class="col-md-8 padding-10px"><small> {{course.program_lengths.name}}</small></div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-4 courseDetail padding-10px"><strong>Application Fee</strong></div>
+                                                                                <div class="col-md-8 padding-10px"><small>$ {{course.application_fee}}</small></div>
+                                                                            </div>
+                                                                            <div class="row" v-if="course.ilets_scores">
+                                                                                <div class="col-md-4 courseDetail padding-10px"><strong>Ilets Score</strong></div>
+                                                                                <div class="col-md-8 padding-10px"><small> {{course.ilets_scores.name}}</small></div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-4 courseDetail padding-10px"><strong>Math Score</strong></div>
+                                                                                <div class="col-md-8 padding-10px"><small> {{course.mathScore}}</small></div>
+                                                                            </div>
+                                                                           
+                                                                            <div class="row">
+                                                                                <div class="col-md-4 courseDetail padding-10px"><strong>Scholarship</strong></div>
+                                                                                <div class="col-md-8 padding-10px">
+                                                                                    
+                                                                                    <small  v-if="course.scholarship == '1'" >Available</small>
+                                                                                    
+                                                                                    <small v-if="course.scholarship == '2'">Not Available</small>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                                <!-- <div class="row">
+                                                                                    <div class="padding-10px capitalize ">{{$course['description']}}</div>
+                                                                                </div> -->
+                                                                        </div>
+                                                                    </li>
+                                                                
+                                                            </div>
+                                                          
+                                                        </ul>
+                                                    </div>
+                                                    <!---->
+                                                    <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                                                        <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div>
+                                                    </div>
+                                                    <div class="ps__rail-y" style="top: 0px; height: 400px; right: 0px;">
+                                                        <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 296px;"></div>
+                                                    </div>
+                                                </div>
+                                            </perfect-scrollbar>
+                                        </div>
+                                    </div>
+                                </div>
+                                    
+                            </div>
+                            <div class="row text-center" v-if="coursesLength == '0'">
+                                <div class="col-md-12">
+
+                                    <p class="text-danger">No Courese Found</p>
+                                </div>
+                            </div>
+             
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+
+        data(){
+            return {
+                abc:'',
+                courses:{},
+                coursesLength:'',
+                country_id:'',
+                countries:{},
+                colleges:{},
+                colleges_id:'',
+                qualifications:'',
+                qualifications_id:'',
+                programLengths:{},
+                programLength_id:'',
+                subjects:'',
+                subjects_id:'',
+                courseLevels:{},
+                courseLevel_id:'',
+                iletsScores:{},
+                iletsScore_id:'',
+                englishScores:{},
+                englishScore_id:'',
+                program_status:'',
+                search:"",
+                mathScore_id:'',
+            }
+        },
+        created(){
+            console.log('hello');
+            this.countrylist();
+
+        },
+        mounted() {
+            console.log('Component mounted.');
+        },
+        methods:{
+
+            clearFilter(){
+                this.mathScore_id ='';
+                this.englishScore_id ='';
+                this.iletsScore_id ='';
+                this.search ='';
+                this.courseLevel_id ='';
+                this.subjects_id ='';
+                this.programLength_id ='';
+                this.qualifications_id ='';
+                this.program_status ='';
+                this.colleges_id ='';
+            },
+            countrylist(){
+                    // this.emptyCountryData();
+
+                    axios.get('/search/countries').then( (response)=>{
+                    this.countries = response.data;
+                    console.log(this.countries);
+                });
+            },
+            onIsIletsClick(){
+                this.iletsScore_id ='';
+            },
+            onIsMathClick(){
+                this.mathScore_id ='';
+            },
+            onCountryChange(){
+                if(this.country_id){
+
+                
+                    axios.post('/search', {'country_id':this.country_id } ).then(response => {
+                        this.courses = response.data.courses;
+                        this.coursesLength = response.data.courses.length;
+                        this.colleges = response.data.colleges;
+                        this.qualifications = response.data.qualifications;
+                        this.programLengths = response.data.programLengths;
+                        this.subjects = response.data.subjects;
+                        this.courseLevels = response.data.courseLevels;
+                        this.iletsScores = response.data.iletsScores;
+                        this.englishScores = response.data.englishScores;
+                        // this.courses = response.data;
+                    console.log(this.courses);                
+                    console.log(response.data);                
+                    console.log(this.coursesLength); 
+                        
+                    }).catch(error => {
+                        if (error.response.status === 422) {
+                        this.updateErrors = error.response.data.errors || {};
+                            }
+                    });
+                }
+            },
+
+        },
+        computed:{
+            filterCourse:function(event){
+                console.log(this.qualifications_id);
+                console.log('this.colleges_id');
+                console.log(this.colleges_id);
+                console.log(this.courseLevel_id);
+                console.log(this.programLength_id);
+                console.log(String(this.iletsScore_id));
+                this.iletsScore_id = String(this.iletsScore_id);
+                this.colleges_id = String(this.colleges_id);
+                // this.search = this.search.toLowerCase();
+                console.log('this.iletsScore_id');
+                console.log(this.iletsScore_id);
+                
+                return this.courses.filter((course)=>{
+                    if(this.iletsScore_id){
+                        if(course.ilets_score){
+                            console.log('course.ilets_score');
+                            console.log(course.ilets_score);
+                            if(this.mathScore_id){
+                                if(course.mathScore){
+                                    if(this.courseLevel_id){
+                                        if(course.course_level){
+                                            if(this.englishScore_id){
+                                                if(course.english_score){
+                                                    return course.program_status.match(this.program_status) && course.name.toLowerCase().match(this.search.toLowerCase()) && course.qualification.match(this.qualifications_id) && course.subject.match(this.subjects_id) && course.course_level.match(this.courseLevel_id) && course.english_score.match(this.englishScore_id)  && course.ilets_score.match(this.iletsScore_id) && course.program_length.match(this.programLength_id) && String(course.college_id).match(this.colleges_id) && parseInt(course.mathScore) <= parseInt(this.mathScore_id)  ; 
+                                                    
+                                                }
+                                            }
+                                            return course.program_status.match(this.program_status) && course.name.toLowerCase().match(this.search.toLowerCase()) && course.qualification.match(this.qualifications_id) && course.subject.match(this.subjects_id) && course.course_level.match(this.courseLevel_id)  && course.ilets_score.match(this.iletsScore_id) && course.program_length.match(this.programLength_id) && String(course.college_id).match(this.colleges_id) && parseInt(course.mathScore) <= parseInt(this.mathScore_id)  ; 
+                                        }
+                                    }
+                                    return course.program_status.match(this.program_status) && course.name.toLowerCase().match(this.search.toLowerCase()) && course.qualification.match(this.qualifications_id) && course.subject.match(this.subjects_id)  && course.ilets_score.match(this.iletsScore_id) && course.program_length.match(this.programLength_id) && String(course.college_id).match(this.colleges_id) && parseInt(course.mathScore) <= parseInt(this.mathScore_id)  ; 
+                                }
+                            }
+                            if(this.englishScore_id){
+                                if(course.english_score){
+
+                                    return course.program_status.match(this.program_status) && course.name.toLowerCase().match(this.search.toLowerCase()) && course.qualification.match(this.qualifications_id) && course.subject.match(this.subjects_id) && course.course_level.match(this.courseLevel_id) && course.english_score.match(this.englishScore_id)  && course.ilets_score.match(this.iletsScore_id) && course.program_length.match(this.programLength_id) && String(course.college_id).match(this.colleges_id) ;
+                                }
+                            }
+                            if(this.courseLevel_id){
+                                if(course.course_level){
+                                    if(this.englishScore_id){
+                                        if(course.english_score){
+
+                                            return course.program_status.match(this.program_status) && course.name.toLowerCase().match(this.search.toLowerCase()) && course.qualification.match(this.qualifications_id) && course.subject.match(this.subjects_id) && course.course_level.match(this.courseLevel_id) && course.english_score.match(this.englishScore_id)  && course.ilets_score.match(this.iletsScore_id) && course.program_length.match(this.programLength_id) && String(course.college_id).match(this.colleges_id) ; 
+                                        }
+                                    }
+                                    return course.program_status.match(this.program_status) && course.name.toLowerCase().match(this.search.toLowerCase()) && course.qualification.match(this.qualifications_id) && course.subject.match(this.subjects_id) && course.course_level.match(this.courseLevel_id)  && course.ilets_score.match(this.iletsScore_id) && course.program_length.match(this.programLength_id) && String(course.college_id).match(this.colleges_id)  ; 
+                                }
+                            }
+                            return course.program_status.match(this.program_status) && course.name.toLowerCase().match(this.search.toLowerCase()) && course.qualification.match(this.qualifications_id) && course.subject.match(this.subjects_id)  && course.ilets_score.match(this.iletsScore_id) && course.program_length.match(this.programLength_id) && String(course.college_id).match(this.colleges_id); 
+                        }
+                    }else{
+                        if(this.colleges_id){
+                            if(course.college_id){
+                              return course.program_status.match(this.program_status) && course.name.toLowerCase().match(this.search.toLowerCase()) && course.qualification.match(this.qualifications_id) && course.subject.match(this.subjects_id) && course.course_level.match(this.courseLevel_id) && course.program_length.match(this.programLength_id) && String(course.college_id).match(this.colleges_id); 
+                            }
+                        }else{
+                                if(this.mathScore_id){
+                                    if(course.mathScore){
+
+                                        return course.program_status.match(this.program_status) && course.name.toLowerCase().match(this.search.toLowerCase()) && course.qualification.match(this.qualifications_id) && course.subject.match(this.subjects_id) && parseInt(course.mathScore) <= parseInt(this.mathScore_id); 
+                                    }
+                                }else{
+                                    if(this.courseLevel_id){
+                                        if(course.course_level){
+
+                                            return course.program_status.match(this.program_status) && course.name.toLowerCase().match(this.search.toLowerCase()) && course.qualification.match(this.qualifications_id) && course.subject.match(this.subjects_id) && course.course_level.match(this.courseLevel_id); 
+                                        }
+                                    }else{
+                                        if(this.programLength_id){
+                                            if(course.program_length){
+
+                                                return course.program_status.match(this.program_status) && course.name.toLowerCase().match(this.search.toLowerCase()) && course.qualification.match(this.qualifications_id) && course.subject.match(this.subjects_id) && course.program_length.match(this.programLength_id) && String(course.college_id).match(this.colleges_id); 
+                                            }
+                                        }else{
+                                            if(this.englishScore_id){
+                                                if(course.english_score){
+
+                                                    return course.program_status.match(this.program_status) && course.name.toLowerCase().match(this.search.toLowerCase()) && course.qualification.match(this.qualifications_id) && course.subject.match(this.subjects_id) && course.english_score.match(this.englishScore_id) && String(course.college_id).match(this.colleges_id); 
+                                                }
+                                            }else{
+                                                return course.program_status.match(this.program_status) && course.name.toLowerCase().match(this.search.toLowerCase()) && course.qualification.match(this.qualifications_id) && course.subject.match(this.subjects_id) && String(course.college_id).match(this.colleges_id); 
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+                    }
+                  
+                });
+              
+                    //   return this.qualifications.filter((qualification)=>{
+                    //             return qualification.name.match(this.qualifications); 
+                        
+                    //     });
+              
+            },
+            
+
+            // filterData:function(){
+            // return this.dataList.filter((blog)=>{
+            //     return blog.name.match(this.testing);
+            // });
+            // },
+            
+            }
+    }
+</script>
